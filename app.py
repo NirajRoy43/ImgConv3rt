@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, send_file
 from PIL import Image
 from fpdf import FPDF
 import os
+from pdf2image import convert_from_path
 
 app = Flask(__name__)
 
@@ -40,6 +41,8 @@ def upload_file():
             converted_path = convert_jpg_to_pdf(file_path)
         elif conversion_type == 'png_to_pdf':
             converted_path = convert_png_to_pdf(file_path)
+        elif conversion_type == 'pdf_to_jpg':
+            converted_path = convert_pdf_to_jpg(file_path)
 
         return send_file(converted_path, as_attachment=True)
 
@@ -67,6 +70,16 @@ def convert_jpg_to_pdf(file_path):
 
 def convert_png_to_pdf(file_path):
     return convert_jpg_to_pdf(file_path)
+
+def convert_pdf_to_jpg(file_path):
+    images = convert_from_path(file_path)
+    converted_paths = []
+    for i, image in enumerate(images):
+        converted_path = os.path.join(app.config['CONVERTED_FOLDER'], os.path.splitext(os.path.basename(file_path))[0] + f'_{i + 1}.jpg')
+        image.save(converted_path, 'JPEG')
+        converted_paths.append(converted_path)
+    # Return the first converted image for simplicity
+    return converted_paths[0]
 
 if __name__ == '__main__':
     app.run(debug=True)
