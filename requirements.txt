@@ -1,3 +1,4 @@
 Flask
 Pillow
 fpdf
+pdf2image
