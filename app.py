@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, send_file
+from flask import Flask, request, render_template, send_file, send_from_directory
 from PIL import Image
 from fpdf import FPDF
 from pdf2image import convert_from_path
@@ -64,7 +64,7 @@ def convert_jpg_to_pdf(file_path):
     converted_path = os.path.join(app.config['CONVERTED_FOLDER'], os.path.splitext(os.path.basename(file_path))[0] + '.pdf')
     pdf = FPDF()
     pdf.add_page()
-    pdf.image(file_path, x = 10, y = 8, w = 190)
+    pdf.image(file_path, x=10, y=8, w=190)
     pdf.output(converted_path)
     return converted_path
 
